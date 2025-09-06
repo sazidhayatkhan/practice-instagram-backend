@@ -1,6 +1,7 @@
 import {
   Injectable,
   InternalServerErrorException,
+  ConflictException,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
@@ -13,10 +14,29 @@ export class UsersService {
 
   async createUser(createUserDto: CreateUserDto) {
     try {
+      const existingUser = await this.prisma.user.findFirst({
+        where: {
+          OR: [
+            { email: createUserDto.email },
+            { username: createUserDto.username },
+          ],
+        },
+      });
+
+      if (existingUser) {
+        throw new ConflictException(
+          existingUser.email === createUserDto.email
+            ? 'Email already exists'
+            : 'Username already exists',
+        );
+      }
+
       return await this.prisma.user.create({
         data: createUserDto,
       });
     } catch (error) {
+      if (error instanceof ConflictException) throw error;
+
       throw new InternalServerErrorException(
         'Failed to create user',
         error.message,
