@@ -13,7 +13,7 @@ import { UpdatePostDto } from './dtos/update-post.dto';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+    constructor(private readonly postsService: PostsService) {}
 
   @Post()
   async create(@Body() createPostDto: CreatePostDto) {

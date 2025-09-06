@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { UpdatePostDto } from './dtos/update-post.dto';
 
@@ -22,7 +22,7 @@ export class PostsService {
             return await this.prisma.post.findMany({
                 include: {
                     author: true,
-                    commetns: true,
+                    comments: true,
                     likes: true,
                 },
                 orderBy: {
@@ -40,7 +40,7 @@ export class PostsService {
                 where: { id },
                 include: {
                     author: true,
-                    commetns: true,
+                    comments: true,
                     likes: true,
                 },
             });
